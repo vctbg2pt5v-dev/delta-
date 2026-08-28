@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delta Operations Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="system-start-overlay" id="systemStartOverlay">
+  <div class="system-start-panel">
+
+    <div class="system-start-icon">
+      D
+    </div>
+
+    <div class="system-start-label">
+      DELTA CORPORATION
+    </div>
+
+    <h1>SYSTEM OFFLINE</h1>
+
+    <p>
+      The monitoring system has not been started.
+    </p>
+
+    <div class="system-start-status">
+      <span class="status-dot"></span>
+      SYSTEM NOT RUNNING
+    </div>
+
+    <button id="startSystemBtn" class="start-system-btn">
+      START SYSTEM
+    </button>
+
+  </div>
+</div>
+    <div class="error-overlay" id="errorOverlay">
+      <div class="error-content">
+        <div class="error-badge">Danger</div>
+        <div class="error-label" id="errorLabel">Pressure threshold exceeded</div>
+        <button class="siren-close" id="sirenCloseBtn">Mute</button>
+      </div>
+    </div>
+
+    <aside class="fault-drawer" id="faultDrawer" aria-live="polite">
+      <div class="fault-drawer__header">
+        <span class="fault-drawer__eyebrow">Fault status</span>
+<button class="fault-drawer__toggle" id="faultDrawerToggle" type="button">Close</button>
+      </div>
+      <div class="fault-drawer__message" id="faultDrawerMessage">Pressure threshold exceeded</div>
+      <button class="fault-drawer__button" id="faultDrawerMuteBtn">Mute</button>
+    </aside>
+
+    <div class="dashboard-shell">
+      <div class="header-strip" aria-label="Delta Corporation site header">
+        <div class="header-strip__brand">Delta Corporation</div>
+        <div class="header-strip__site">
+          <span class="header-strip__dot"></span>
+          <span id="siteLocation">al khor</span>
+        </div>
+        <div class="header-strip__tag">DELTA</div>
+      </div>
+
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark" aria-label="Delta Corporation logo">
+            <span class="brand-mark-inner">D</span>
+          </div>
+          <div class="brand-copy">
+            <p class="eyebrow">LIVE OPERATIONS</p>
+            <h1>Delta Corporation</h1>
+            <span class="brand-subtitle">Energy & Process Systems</span>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="option-group" id="siteButtons">
+            <button class="site-btn active" data-site="north">CAPCO</button>
+            <button class="site-btn" data-site="offshore">AL KHOR</button>
+            <button class="site-btn" data-site="gas">Ras laffan</button>
+          </div>
+          <button class="secondary-btn" id="pauseBtn">Pause feed</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="kpi-grid">
+          <article class="kpi-card accent">
+            <div class="card-header">
+              <span>Pressure Min</span>
+              <span class="icon">◕</span>
+            </div>
+            <h2 id="pressureMinValue">—</h2>
+            <small id="pressureMinDelta">psi</small>
+          </article>
+
+          <article class="kpi-card">
+            <div class="card-header">
+              <span>Pressure Max</span>
+              <span class="icon">◔</span>
+            </div>
+            <h2 id="pressureMaxValue">—</h2>
+            <small id="pressureMaxDelta">psi</small>
+          </article>
+
+          <article class="kpi-card">
+            <div class="card-header">
+              <span>Battery Level</span>
+              <span class="icon">▣</span>
+            </div>
+            <h2 id="batteryValue">86%</h2>
+            <small id="batteryDelta">Charging stable</small>
+          </article>
+
+          <article class="kpi-card warning">
+            <div class="card-header">
+              <span>Flow Rate</span>
+              <span class="icon">⎇</span>
+            </div>
+            <h2 id="flowRateValue">—</h2>
+            <small id="flowRateDelta">mmscf/d</small>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel trend-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">PROCESS TREND</p>
+                <h3>Live well performance</h3>
+              </div>
+              <span class="status-pill" id="statusPill">OFFLINE</span>
+            </div>
+
+            <div class="trend-metrics">
+              <div>
+                <label>Throughput</label>
+                <strong id="throughputValue">—</strong>
+              </div>
+              <div>
+                <label>Efficiency</label>
+                <strong id="efficiencyValue">—</strong>
+              </div>
+              <div>
+                <label>Vibration</label>
+                <strong id="vibrationValue">—</strong>
+              </div>
+            </div>
+
+            <svg id="trendChart" viewBox="0 0 680 220" preserveAspectRatio="none" aria-label="Production chart">
+              <defs>
+                <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#d6a94d" stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="#d6a94d" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <g id="gridLayer"></g>
+              <path id="chartArea" d="" fill="url(#areaFill)"></path>
+              <path id="chartLine" d="" fill="none" stroke="#d6a94d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </article>
+
+          <article class="panel control-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">CONTROL</p>
+                <h3>Production tuning</h3>
+              </div>
+            </div>
+
+            <div class="emergency-panel" id="emergencyPanel">
+              <div class="emergency-panel-header">
+                <span>Emergency Mode</span>
+                <span class="emergency-lock" id="emergencyLockStatus">Locked</span>
+              </div>
+              <p>Process is locked out until reset is approved.</p>
+              <button class="reset-btn" id="resetBtn">Reset to Online</button>
+            </div>
+
+            <div class="control-block">
+              <label for="targetSlider">Target throughput</label>
+              <input id="targetSlider" type="range" min="60" max="100" value="82" />
+              <div class="range-scale">
+                <span>60%</span>
+                <strong id="targetValue">82%</strong>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <div class="threshold-box">
+              <div class="threshold-header">
+                <span>Threshold alarm</span>
+                <span class="alarm-status" id="alarmStatus">Not Set</span>
+              </div>
+
+              <div class="threshold-grid">
+
+  <label>
+    <span>Min pressure</span>
+    <input
+      id="minPressureLimit"
+      type="number"
+      placeholder="Enter value"
+      min="1000"
+      max="5000"
+    />
+  </label>
+
+  <label>
+    <span>Max pressure</span>
+    <input
+      id="maxPressureLimit"
+      type="number"
+      placeholder="Enter value"
+      min="2000"
+      max="6000"
+    />
+  </label>
+
+  <label>
+    <span>Battery min</span>
+    <input
+      id="batteryLimit"
+      type="number"
+      placeholder="Enter value"
+      min="5"
+      max="100"
+    />
+  </label>
+
+  <label>
+    <span>Flow min</span>
+    <input
+      id="flowLimit"
+      type="number"
+      placeholder="Enter value"
+      min="1"
+      max="20"
+      step="0.1"
+    />
+  </label>
+
+</div>
+
+<button
+  type="button"
+  class="secondary-btn"
+  id="setThresholdsBtn"
+>
+  SET THRESHOLDS
+</button>
+            </div>
+
+            <div class="switch-row">
+              <div>
+                <span>Compressor status</span>
+                <small>Auto-optimized</small>
+              </div>
+              <button class="switch on" id="compressorSwitch">On</button>
+            </div>
+
+            <div class="switch-row">
+              <div>
+                <span>Leak detection</span>
+                <small>System check</small>
+              </div>
+              <button class="switch on" id="leakSwitch">On</button>
+            </div>
+
+            <div class="switch-row">
+              <div>
+                <span>Remote shutdown</span>
+                <small>Protective mode</small>
+              </div>
+              <button class="switch" id="shutdownSwitch">Off</button>
+            </div>
+
+            <button class="emergency-btn" id="emergencyShutdownBtn">Immediate Shutdown</button>
+          </article>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="panel alarm-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">ALERTS</p>
+                <h3>Alarm feed</h3>
+              </div>
+              <button class="secondary-btn small" id="ackBtn">Acknowledge</button>
+            </div>
+            <ul id="alarmList" class="alarm-list"></ul>
+          </article>
+
+          <article class="panel assets-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">ASSETS</p>
+                <h3>Well overview</h3>
+              </div>
+            </div>
+
+            <div class="well-list">
+              <div class="well-card active">
+                <div>
+                  <strong>Well 12A</strong>
+                  <span>Flow 8.6</span>
+                </div>
+                <span class="well-tag healthy">Healthy</span>
+              </div>
+
+              <div class="well-card">
+                <div>
+                  <strong>Well 18B</strong>
+                  <span>Flow 7.2</span>
+                </div>
+                <span class="well-tag watch">Watch</span>
+              </div>
+
+              <div class="well-card">
+                <div>
+                  <strong>Well 21C</strong>
+                  <span>Flow 9.8</span>
+                </div>
+                <span class="well-tag healthy">Healthy</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
